@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Fibonacci con WebAssembly</title>
+</head>
+<body>
+    <h1>Calculadora Fibonacci en WebAssembly</h1>
+    
+    <label for="inputNumber">Introduce un número: </label>
+    <input type="number" id="inputNumber" min="0" placeholder="Número de Fibonacci">
+    <button id="calculateButton">Calcular</button>
+
+    <p id="result"></p>
+    <p id="time"></p>
+
+    <script>
+        // WebAssembly Module (configuración básica)
+        var Module = {
+            onRuntimeInitialized: function () {
+                document.getElementById("calculateButton").addEventListener("click", calculateFibonacci);
+            }
+        };
+
+        // Función que maneja el cálculo de Fibonacci y el tiempo de ejecución
+        function calculateFibonacci() {
+            const number = parseInt(document.getElementById("inputNumber").value);
+            if (isNaN(number)) {
+                alert("Por favor, ingresa un número válido.");
+                return;
+            }
+
+            // Tiempo de inicio
+            const startTime = performance.now();
+
+            // Llamada a la función de Fibonacci desde WebAssembly
+            const result = Module._fibonacci(number);
+
+            // Tiempo de finalización
+            const endTime = performance.now();
+            const timeTaken = (endTime - startTime).toFixed(4); // Tiempo en milisegundos
+
+            // Mostrar el resultado en el HTML
+            document.getElementById("result").textContent = "Resultado: " + result;
+            document.getElementById("time").textContent = "Tiempo de ejecución: " + timeTaken + " ms";
+        }
+    </script>
+
+    <!-- Cargar WebAssembly -->
+    <script src="index_wasm.js"></script> <!-- Este es el archivo JS generado por Emscripten -->
+</body>
+</html>
